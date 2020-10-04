@@ -2,8 +2,8 @@ object FormPrincipal: TFormPrincipal
   Left = 0
   Top = 0
   Caption = 'FormPrincipal'
-  ClientHeight = 333
-  ClientWidth = 613
+  ClientHeight = 452
+  ClientWidth = 662
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,21 +17,27 @@ object FormPrincipal: TFormPrincipal
   object tbiTreinamento: TPageControl
     Left = 0
     Top = 0
-    Width = 613
-    Height = 333
+    Width = 662
+    Height = 452
     ActivePage = tbiClassificacao
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 613
+    ExplicitHeight = 333
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
+      ExplicitLeft = 8
+      ExplicitTop = 28
+      ExplicitWidth = 605
+      ExplicitHeight = 381
       DesignSize = (
-        605
-        305)
+        654
+        424)
       object Splitter1: TSplitter
-        Left = 328
-        Top = 24
-        Width = 1
-        Height = 249
+        Left = 368
+        Top = 29
+        Width = 2
+        Height = 343
         Align = alNone
         Color = clSilver
         ParentColor = False
@@ -39,48 +45,51 @@ object FormPrincipal: TFormPrincipal
       object Label1: TLabel
         Left = 400
         Top = 29
-        Width = 61
-        Height = 13
+        Width = 202
+        Height = 60
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Classifica'#231#227'o'
+        ExplicitWidth = 153
+        ExplicitHeight = 17
       end
-      object GroupBox1: TGroupBox
+      object gbDesenho: TGroupBox
         Left = 16
         Top = 24
-        Width = 265
-        Height = 201
+        Width = 304
+        Height = 317
         Caption = 'Desenho'
         TabOrder = 0
         object pnDesenho: TPaintBox
           Left = 2
           Top = 15
-          Width = 261
-          Height = 184
+          Width = 300
+          Height = 300
           Align = alClient
           OnMouseDown = pnDesenhoMouseDown
           OnMouseMove = pnDesenhoMouseMove
           OnMouseUp = pnDesenhoMouseUp
           OnPaint = pnDesenhoPaint
-          ExplicitLeft = 152
-          ExplicitTop = 80
-          ExplicitWidth = 105
-          ExplicitHeight = 105
+          ExplicitLeft = -20
+          ExplicitTop = 24
+          ExplicitWidth = 261
+          ExplicitHeight = 184
         end
       end
-      object Button1: TButton
+      object btnReconhecer: TButton
         Left = 16
-        Top = 248
-        Width = 265
+        Top = 347
+        Width = 304
         Height = 25
         Caption = 'Reconhecer'
         TabOrder = 1
+        OnClick = btnReconhecerClick
       end
       object ListBox1: TListBox
-        Left = 392
+        Left = 424
         Top = 48
-        Width = 161
-        Height = 225
+        Width = 178
+        Height = 324
         ItemHeight = 13
         Items.Strings = (
           '0 - 0%'
@@ -99,6 +108,8 @@ object FormPrincipal: TFormPrincipal
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
+      ExplicitWidth = 605
+      ExplicitHeight = 305
     end
   end
 end

@@ -21,8 +21,8 @@ __published:	// IDE-managed Components
 	TPageControl *tbiTreinamento;
 	TTabSheet *tbiClassificacao;
 	TTabSheet *TabSheet2;
-	TGroupBox *GroupBox1;
-	TButton *Button1;
+	TGroupBox *gbDesenho;
+	TButton *btnReconhecer;
 	TSplitter *Splitter1;
 	TListBox *ListBox1;
 	TLabel *Label1;
@@ -34,6 +34,7 @@ __published:	// IDE-managed Components
           int X, int Y);
 	void __fastcall pnDesenhoMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+	void __fastcall btnReconhecerClick(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
