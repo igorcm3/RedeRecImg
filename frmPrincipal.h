@@ -16,6 +16,9 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
 using namespace std;
 //---------------------------------------------------------------------------
 class TFormPrincipal : public TForm
@@ -44,7 +47,7 @@ public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
 	Graphics::TBitmap *DrawingBoard;
 	Boolean IsDrawing;
-	int StartX, StartY;
+	unsigned char* read_bmp(char *fname,int* _w, int* _h);
 	void __fastcall testImagem();
 };
 //---------------------------------------------------------------------------

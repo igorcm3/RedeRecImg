@@ -22,14 +22,8 @@ object FormPrincipal: TFormPrincipal
     ActivePage = tbiClassificacao
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 613
-    ExplicitHeight = 333
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
-      ExplicitLeft = 8
-      ExplicitTop = 28
-      ExplicitWidth = 605
-      ExplicitHeight = 381
       DesignSize = (
         654
         424)
@@ -45,13 +39,11 @@ object FormPrincipal: TFormPrincipal
       object Label1: TLabel
         Left = 400
         Top = 29
-        Width = 202
-        Height = 60
+        Width = 61
+        Height = 13
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = 'Classifica'#231#227'o'
-        ExplicitWidth = 153
-        ExplicitHeight = 17
       end
       object gbDesenho: TGroupBox
         Left = 16
@@ -108,8 +100,6 @@ object FormPrincipal: TFormPrincipal
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
-      ExplicitWidth = 605
-      ExplicitHeight = 305
     end
   end
 end

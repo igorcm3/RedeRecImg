@@ -67,7 +67,7 @@ void __fastcall TFormPrincipal::pnDesenhoMouseDown(TObject *Sender, TMouseButton
 	{
 		IsDrawing = True;
 		DrawingBoard->Canvas->Pen->Color = clBlack;
-		DrawingBoard->Canvas->Pen->Width = 12.0;
+		DrawingBoard->Canvas->Pen->Width = 36.0;
 		DrawingBoard->Canvas->MoveTo(X, Y);
 	}
 	if (Button == mbRight) {
@@ -96,13 +96,14 @@ void __fastcall TFormPrincipal::btnReconhecerClick(TObject *Sender)
 
 	Graphics::TBitmap *saveBoard = new Graphics::TBitmap(); // bitmap2
 	TRect ARect;
-	saveBoard->Width = 300;
-	saveBoard->Height = 300;
+	saveBoard->Width = 20;
+	saveBoard->Height = 20;
 	ARect = Rect(0, 0, saveBoard->Width, saveBoard->Height);
 	saveBoard->Canvas->StretchDraw(ARect, DrawingBoard);
 	saveBoard->SaveToFile("bitmap.bmp");
 	delete saveBoard;
 	testImagem();
+	ShowMessage("Bitmap salvo com sucesso!");
 }
 
 void __fastcall TFormPrincipal::testImagem()
@@ -110,14 +111,24 @@ void __fastcall TFormPrincipal::testImagem()
     // Transforma bitmap em matriz de pixels
 	FILE *fp;
 	fp = fopen("bitmap.txt","wt");
-	BmpHeader head;
-	ifstream f("bitmap.bmp", ios::binary);
+	//BmpHeader head;
+	//ifstream f("bitmap.bmp", ios::binary);
+	int w, h, i, j;
+	unsigned char* img = read_bmp("bitmap.bmp", &w, &h);
+	for(j = 0 ; j < h ; j++)
+	{
+		for(i = 0 ; i < w ; i++)
+			fprintf(fp,"%d", img[j * w + i] ? '0' : '1' );
+		fprintf(fp,"\n");
+	}
+	/*
+
 	int headsize = sizeof(BmpHeader);
 	f.read((char*)&head, headsize);
 	int height = head.biHeight;
 	int width = head.biWidth;
 	int bpp = 1;
-	int linesize = ((width * bpp + 301) / 302) * 4;
+	int linesize = ((width * bpp + 31) / 32) * 4;
 	int filesize = linesize * height;
 	vector<unsigned char> data(filesize);
 	//read color table
@@ -139,11 +150,55 @@ void __fastcall TFormPrincipal::testImagem()
 			int v = (data[pos] & bit) > 0;
 
 			fprintf(fp,"%d", v);
-        }
+		}
 		fprintf(fp,"\n");
 	}
 	f.close();
 	fclose(fp);
+	*/
+}
+
+
+unsigned char* TFormPrincipal::read_bmp(char *fname,int* _w, int* _h)
+{
+    unsigned char head[54];
+	FILE *f = fopen(fname,"rb");
+
+    // BMP header is 54 bytes
+	fread(head, 1, 54, f);
+
+	int w = head[18] + ( ((int)head[19]) << 8) + ( ((int)head[20]) << 16) + ( ((int)head[21]) << 24);
+    int h = head[22] + ( ((int)head[23]) << 8) + ( ((int)head[24]) << 16) + ( ((int)head[25]) << 24);
+
+    // lines are aligned on 4-byte boundary
+    int lineSize = (w / 8 + (w / 8) % 4);
+	int fileSize = lineSize * h;
+
+	unsigned char* img = (unsigned char*)malloc(sizeof(unsigned char)*(w * h));
+	unsigned char* data = (unsigned char*)malloc(fileSize);
+
+    // skip the header
+    fseek(f,54,SEEK_SET);
+
+    // skip palette - two rgb quads, 8 bytes
+	fseek(f, 8, SEEK_CUR);
+
+    // read data
+	fread(data,1,fileSize,f);
+
+    // decode bits
+    int i, j, k, rev_j;
+    for(j = 0, rev_j = h - 1; j < h ; j++, rev_j--) {
+        for(i = 0 ; i < w / 8; i++) {
+            int fpos = j * lineSize + i, pos = rev_j * w + i * 8;
+            for(k = 0 ; k < 8 ; k++)
+                img[pos + (7 - k)] = (data[fpos] >> k ) & 1;
+        }
+    }
+
+    free(data);
+	*_w = w; *_h = h;
+    return img;
 }
 //---------------------------------------------------------------------------
 
