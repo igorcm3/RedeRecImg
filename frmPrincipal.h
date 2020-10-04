@@ -12,8 +12,11 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <System.SysUtils.hpp>
 #include <System.Variants.hpp>
- // #include <System.Graphic.hpp>
- #include <list>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <vector>
+using namespace std;
 //---------------------------------------------------------------------------
 class TFormPrincipal : public TForm
 {
@@ -41,7 +44,8 @@ public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
 	Graphics::TBitmap *DrawingBoard;
 	Boolean IsDrawing;
-    int StartX, StartY;	// User declarations
+	int StartX, StartY;
+	void __fastcall testImagem();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormPrincipal *FormPrincipal;
