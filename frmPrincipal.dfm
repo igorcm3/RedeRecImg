@@ -11,6 +11,7 @@ object FormPrincipal: TFormPrincipal
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object tbiTreinamento: TPageControl
@@ -21,11 +22,8 @@ object FormPrincipal: TFormPrincipal
     ActivePage = tbiClassificacao
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 380
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
-      ExplicitWidth = 281
-      ExplicitHeight = 165
       DesignSize = (
         605
         305)
@@ -41,7 +39,7 @@ object FormPrincipal: TFormPrincipal
       object Label1: TLabel
         Left = 400
         Top = 29
-        Width = 153
+        Width = 61
         Height = 13
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight, akBottom]
@@ -60,7 +58,9 @@ object FormPrincipal: TFormPrincipal
           Width = 261
           Height = 184
           Align = alClient
+          OnMouseDown = pnDesenhoMouseDown
           OnMouseMove = pnDesenhoMouseMove
+          OnMouseUp = pnDesenhoMouseUp
           OnPaint = pnDesenhoPaint
           ExplicitLeft = 152
           ExplicitTop = 80
@@ -99,8 +99,6 @@ object FormPrincipal: TFormPrincipal
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
-      ExplicitWidth = 281
-      ExplicitHeight = 165
     end
   end
 end

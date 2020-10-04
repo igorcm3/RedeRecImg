@@ -1,8 +1,6 @@
 //---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
-
 #include "frmPrincipal.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -15,57 +13,42 @@ __fastcall TFormPrincipal::TFormPrincipal(TComponent* Owner)
 }
 //---------------------------------------------------------------------------
 
-
-
-
 void __fastcall TFormPrincipal::pnDesenhoMouseMove(TObject *Sender, TShiftState Shift,
-          int X, int Y)
+		  int X, int Y)
 {
-   /* Desenho no painel  */
-   int i = High(FPosicoes)+1;
-   SetLength(FPosicoes,i+1);
-   FPosicoes[i]->X = X;
-   FPosicoes[i]->y = Y;
-   pnDesenho->Invalidate;
+   if( IsDrawing )
+	{
+		pnDesenho->Refresh();
+        Canvas->MoveTo(0, 0);
+		DrawingBoard->Canvas->LineTo(X, Y);
+		pnDesenho->Canvas->Draw(0, 0, DrawingBoard);
+	}
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFormPrincipal::pnDesenhoPaint(TObject *Sender)
 {
-   /*	int K := High(FPosicoes);
-
-   if K < 0 then
-
-      Exit;
-
-   with PaintBox1.Canvas do
-
-   begin
-
-      with FPosicoes[0] do
-
-         Ellipse(X-2, Y-2, X+2, Y+2);
-
-      if K > 0 then
-
-      begin
-
-         with FPosicoes[K] do
-
-            Ellipse(X-2, Y-2, X+2, Y+2);
-
-         with FPosicoes[0] do
-
-            MoveTo(X, Y);
-
-         for K := 1 to K do
-
-            LineTo(FPosicoes[K].x, FPosicoes[K].y);
-
-         end;
-
-	  end;
-      */
+	pnDesenho->Canvas->Draw(0, 0, DrawingBoard);
+}
+//---------------------------------------------------------------------------
+void __fastcall TFormPrincipal::FormCreate(TObject *Sender)
+{
+	// Inicializa variaveis para desenho
+	DrawingBoard = new Graphics::TBitmap;
+	DrawingBoard->Width = pnDesenho->Width;
+	DrawingBoard->Height = pnDesenho->Height;
+}
+//---------------------------------------------------------------------------
+void __fastcall TFormPrincipal::pnDesenhoMouseDown(TObject *Sender, TMouseButton Button,
+		  TShiftState Shift, int X, int Y)
+{
+	IsDrawing = True;
+}
+//---------------------------------------------------------------------------
+void __fastcall TFormPrincipal::pnDesenhoMouseUp(TObject *Sender, TMouseButton Button,
+		  TShiftState Shift, int X, int Y)
+{
+	IsDrawing = False;
 }
 //---------------------------------------------------------------------------
 

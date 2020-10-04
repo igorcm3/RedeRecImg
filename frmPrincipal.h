@@ -13,6 +13,7 @@
 #include <System.SysUtils.hpp>
 #include <System.Variants.hpp>
  // #include <System.Graphic.hpp>
+ #include <list>
 //---------------------------------------------------------------------------
 class TFormPrincipal : public TForm
 {
@@ -28,12 +29,18 @@ __published:	// IDE-managed Components
 	TPaintBox *pnDesenho;
 	void __fastcall pnDesenhoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall pnDesenhoPaint(TObject *Sender);
+	void __fastcall FormCreate(TObject *Sender);
+	void __fastcall pnDesenhoMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+	void __fastcall pnDesenhoMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
 
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
-	//FPosicoes : array of TPoint;
-	TPoint *FPosicoes;
+	Graphics::TBitmap *DrawingBoard;
+	Boolean IsDrawing;
+    int StartX, StartY;	// User declarations
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormPrincipal *FormPrincipal;
