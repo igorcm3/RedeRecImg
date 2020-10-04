@@ -71,7 +71,7 @@ public:		// User declarations
 	Graphics::TBitmap *DrawingBoard;
 	Boolean IsDrawing;
 	unsigned char* read_bmp(char *fname,int* _w, int* _h);
-	void __fastcall testImagem();
+	void __fastcall bitmapParaMatrizPixels();
 	float funcao_ativacao(float net, int funcao, float a);
 	float derivada(float net, int funcao, float a);
 	void __fastcall AtualizaGrafico();

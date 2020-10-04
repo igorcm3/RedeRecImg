@@ -40,7 +40,7 @@ object FormPrincipal: TFormPrincipal
       object Label1: TLabel
         Left = 424
         Top = 29
-        Width = 178
+        Width = 61
         Height = 13
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight, akBottom]

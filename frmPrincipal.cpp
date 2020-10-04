@@ -36,26 +36,6 @@ TFormPrincipal *FormPrincipal;
 	int saidas_formatadas_c2[c2] = {0};
 //---------------------------------------------------------------------------
 
-#pragma pack(2)
-typedef struct BmpHeader {
-  unsigned short  bfType;
-  unsigned int bfSize;
-  unsigned short  bfReserved1;
-  unsigned short  bfReserved2;
-  unsigned int bfOffBits;
-  unsigned int biSize;
-  int  biWidth;
-  int  biHeight;
-  unsigned short  biPlanes;
-  unsigned short  biBitCount;
-  unsigned int biCompression;
-  unsigned int biSizeImage;
-  int  biXPelsPerMeter;
-  int  biYPelsPerMeter;
-  unsigned int biClrUsed;
-  unsigned int biClrImportant;
-}BITMAPHEADER;
-
 __fastcall TFormPrincipal::TFormPrincipal(TComponent* Owner)
 	: TForm(Owner)
 {
@@ -121,115 +101,78 @@ void __fastcall TFormPrincipal::btnReconhecerClick(TObject *Sender)
 {
 	// Salva o desenho como bitmap na pasta raiz Win32/Debug
 	//DrawingBoard->SaveToFile("bitmap.bmp");
+	//DrawingBoard->Monochrome = true;
 
-	Graphics::TBitmap *saveBoard = new Graphics::TBitmap(); // bitmap2
+	Graphics::TBitmap *saveBoard = new Graphics::TBitmap(); // bitmap menor
 	TRect ARect;
 	saveBoard->Width = 20;
 	saveBoard->Height = 20;
 	ARect = Rect(0, 0, saveBoard->Width, saveBoard->Height);
 	saveBoard->Canvas->StretchDraw(ARect, DrawingBoard);
+	saveBoard->Monochrome = true;  // Para salvar em 0 e 1, melhor monocroamtico
 	saveBoard->SaveToFile("bitmap.bmp");
 	delete saveBoard;
-	testImagem();
+	bitmapParaMatrizPixels();
 	ShowMessage("Bitmap salvo com sucesso!");
-
-    // IMPLEMENTAR CLASSIFICAÇÃO.
+	// IMPLEMENTAR CLASSIFICAÇÃO.
 }
 
-void __fastcall TFormPrincipal::testImagem()
+void __fastcall TFormPrincipal::bitmapParaMatrizPixels()
 {
-    // Transforma bitmap em matriz de pixels
+	// Transforma bitmap em matriz de pixels
 	FILE *fp;
 	fp = fopen("bitmap.txt","wt");
-	//BmpHeader head;
-	//ifstream f("bitmap.bmp", ios::binary);
 	int w, h, i, j;
 	unsigned char* img = read_bmp("bitmap.bmp", &w, &h);
 	for(j = 0 ; j < h ; j++)
 	{
 		for(i = 0 ; i < w ; i++)
-			fprintf(fp,"%d", img[j * w + i] ? '0' : '1' );
+			fprintf(fp,"%d", img[j * w + i] ? 0 : 1 );
 		fprintf(fp,"\n");
 	}
-    fclose(fp);
-	/*
-
-	int headsize = sizeof(BmpHeader);
-	f.read((char*)&head, headsize);
-	int height = head.biHeight;
-	int width = head.biWidth;
-	int bpp = 1;
-	int linesize = ((width * bpp + 31) / 32) * 4;
-	int filesize = linesize * height;
-	vector<unsigned char> data(filesize);
-	//read color table
-	uint32_t color0;
-	uint32_t color1;
-	uint32_t colortable[2];
-	f.seekg(54);
-	f.read((char*)&colortable[0], 4);
-	f.read((char*)&colortable[1], 4);
-	//fprintf(fp,"colortable: 0x%06X 0x%06X\n", colortable[0], colortable[1]);
-	f.seekg(head.bfOffBits);
-	f.read((char*)&data[0], filesize);
-	for(int y = height - 1; y >= 0; y--)
-	{
-        for(int x = 0; x < width; x++)
-		{
-			int pos = y * linesize + x / 8;
-			int bit = 1 << (7 - x % 8);
-			int v = (data[pos] & bit) > 0;
-
-			fprintf(fp,"%d", v);
-		}
-		fprintf(fp,"\n");
-	}
-	f.close();
 	fclose(fp);
-	*/
 }
-
 
 unsigned char* TFormPrincipal::read_bmp(char *fname,int* _w, int* _h)
 {
-    unsigned char head[54];
+	/*
+	BITMAP MONOCROMATICO PARA ARRAY DE BITS
+	https://stackoverflow.com/questions/14597043/converting-1-bit-bmp-file-to-array-in-c-c
+	*/
+	unsigned char head[54];
 	FILE *f = fopen(fname,"rb");
-
-    // BMP header is 54 bytes
+	// BMP header is 54 bytes
 	fread(head, 1, 54, f);
-
 	int w = head[18] + ( ((int)head[19]) << 8) + ( ((int)head[20]) << 16) + ( ((int)head[21]) << 24);
-    int h = head[22] + ( ((int)head[23]) << 8) + ( ((int)head[24]) << 16) + ( ((int)head[25]) << 24);
-
-    // lines are aligned on 4-byte boundary
-    int lineSize = (w / 8 + (w / 8) % 4);
+	int h = head[22] + ( ((int)head[23]) << 8) + ( ((int)head[24]) << 16) + ( ((int)head[25]) << 24);
+	// lines are aligned on 4-byte boundary
+	int lineSize = (w / 8 + (w / 8) % 4);
 	int fileSize = lineSize * h;
-
 	unsigned char* img = (unsigned char*)malloc(sizeof(unsigned char)*(w * h));
 	unsigned char* data = (unsigned char*)malloc(fileSize);
-
-    // skip the header
-    fseek(f,54,SEEK_SET);
-
-    // skip palette - two rgb quads, 8 bytes
+	// skip the header
+	fseek(f,54,SEEK_SET);
+	// skip palette - two rgb quads, 8 bytes
 	fseek(f, 8, SEEK_CUR);
-
-    // read data
+	// read data
 	fread(data,1,fileSize,f);
-
-    // decode bits
-    int i, j, k, rev_j;
-    for(j = 0, rev_j = h - 1; j < h ; j++, rev_j--) {
-        for(i = 0 ; i < w / 8; i++) {
-            int fpos = j * lineSize + i, pos = rev_j * w + i * 8;
-            for(k = 0 ; k < 8 ; k++)
-                img[pos + (7 - k)] = (data[fpos] >> k ) & 1;
-        }
-    }
+	// decode bits
+	int i, byte_ctr, j, rev_j;
+	for(j = 0, rev_j = h - 1; j < h ; j++, rev_j--)
+	{
+		for( i = 0; i < w; i++)
+		{
+			byte_ctr = i / 8;
+			unsigned char data_byte = data[j * lineSize + byte_ctr];
+			int pos = rev_j * w + i;
+			unsigned char mask = 0x80 >> i % 8;
+			img[pos] = (data_byte & mask ) ? 1 : 0;
+		}
+	}
 	fclose(f);
-    free(data);
+	free(data);
 	*_w = w; *_h = h;
-    return img;
+	return img;
 }
 //---------------------------------------------------------------------------
 
@@ -256,7 +199,7 @@ void __fastcall TFormPrincipal::carregarValoresTreinamento()
 	int contNum = 0;
 	AnsiString name[10]  = {"0", "1", "2", "3", "4","5", "6", "7", "8", "9"};
 	for (int i=0; i < 10; i++) {
-		AnsiString APath = "ArquivosTreinamento/"+name[i]+contNum+".txt";
+		AnsiString APath = "ArquivosTreinamento/"+name[i]+"_"+contNum+".txt";
 		arq_treinamento = fopen(APath.c_str(),"rt");
 		if (arq_treinamento != NULL) {
 			for(int j = 0; j < cx; j++){
@@ -650,28 +593,22 @@ void __fastcall Thread::Execute()
 //-----------------------------------------------------------------------------//
 //                   Gravação dos Pesos Após treinamento                       //
 //-----------------------------------------------------------------------------//
-
-
 	// Declaração do arquivo que armazena os pesos de treinamento da rede.
 	fp = fopen("pesos_treino.txt","wt");
-
 	// Grava os pesos da camada 1.
 	fprintf(fp,"\tPesos Camada 1\n");
 	for (j = 0; j < (cx * c1); j++)
 	{
 		fprintf(fp,"\tw1[%d] = %f;\n",j, w1[j]);
 	}
-
 	// Grava os pesos da camada 2.
 	fprintf(fp,"\n\tPesos Camada 2\n");
 	for (j = 0; j < (c1 * c2); j++)
 	{
 		fprintf(fp,"\tw2[%d] = %f;\n",j, w2[j]);
 	}
-
 	// Fecha o ponteiro do arquivo dos pesos de treinamento da rede.
 	fclose(fp);
-
 }
 
 //---------------------------------------------------------------------------
