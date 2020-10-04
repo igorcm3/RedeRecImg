@@ -1,7 +1,7 @@
 object FormPrincipal: TFormPrincipal
   Left = 0
   Top = 0
-  Caption = 'FormPrincipal'
+  Caption = 'RNA - Reconhecimento de n'#250'meros'
   ClientHeight = 452
   ClientWidth = 662
   Color = clWhite
@@ -11,6 +11,7 @@ object FormPrincipal: TFormPrincipal
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -37,9 +38,9 @@ object FormPrincipal: TFormPrincipal
         ParentColor = False
       end
       object Label1: TLabel
-        Left = 400
+        Left = 424
         Top = 29
-        Width = 61
+        Width = 178
         Height = 13
         Alignment = taCenter
         Anchors = [akLeft, akTop, akRight, akBottom]
@@ -57,6 +58,7 @@ object FormPrincipal: TFormPrincipal
           Top = 15
           Width = 300
           Height = 300
+          Cursor = crCross
           Align = alClient
           OnMouseDown = pnDesenhoMouseDown
           OnMouseMove = pnDesenhoMouseMove
@@ -100,6 +102,73 @@ object FormPrincipal: TFormPrincipal
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
+      object Chart1: TChart
+        Left = 3
+        Top = 16
+        Width = 409
+        Height = 313
+        Legend.Visible = False
+        Title.Font.Color = clBlack
+        Title.Font.Height = -16
+        Title.Font.Style = [fsBold]
+        Title.Text.Strings = (
+          'Curva de Treinamento da Rede Neural')
+        Title.Transparent = False
+        BottomAxis.MinimumOffset = 3
+        LeftAxis.MinimumOffset = 5
+        View3D = False
+        BevelOuter = bvNone
+        Color = clWhite
+        TabOrder = 0
+        DefaultCanvas = 'TGDIPlusCanvas'
+        ColorPaletteIndex = 13
+        object Series1: TFastLineSeries
+          SeriesColor = clRed
+          ValueFormat = '#.##0,00###'
+          LinePen.Color = clRed
+          LinePen.Width = 2
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+        end
+        object Series4: TFastLineSeries
+          SeriesColor = clBlue
+          Title = 'Series2'
+          LinePen.Color = clBlue
+          LinePen.Width = 2
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+        end
+      end
+      object meTreinamento: TMemo
+        Left = 418
+        Top = 16
+        Width = 215
+        Height = 321
+        ScrollBars = ssBoth
+        TabOrder = 1
+      end
+      object btnIniciarTreinamento: TButton
+        Left = 418
+        Top = 379
+        Width = 100
+        Height = 22
+        Caption = 'Iniciar'
+        TabOrder = 2
+        OnClick = btnIniciarTreinamentoClick
+      end
+      object btnCancelarTreinamento: TButton
+        Left = 533
+        Top = 378
+        Width = 100
+        Height = 24
+        Caption = 'Cancelar'
+        TabOrder = 3
+        OnClick = btnCancelarTreinamentoClick
+      end
     end
   end
 end

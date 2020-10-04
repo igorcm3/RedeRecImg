@@ -12,6 +12,11 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <System.SysUtils.hpp>
 #include <System.Variants.hpp>
+#include <VCLTee.Chart.hpp>
+#include <VCLTee.Series.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -21,6 +26,17 @@
 #include <malloc.h>
 using namespace std;
 //---------------------------------------------------------------------------
+
+class Thread : public TThread
+{
+	private:
+	protected:
+		void __fastcall Execute();
+
+	public:
+		__fastcall Thread(bool CreateSuspended);
+};
+
 class TFormPrincipal : public TForm
 {
 __published:	// IDE-managed Components
@@ -33,6 +49,12 @@ __published:	// IDE-managed Components
 	TListBox *ListBox1;
 	TLabel *Label1;
 	TPaintBox *pnDesenho;
+	TChart *Chart1;
+	TFastLineSeries *Series1;
+	TFastLineSeries *Series4;
+	TMemo *meTreinamento;
+	TButton *btnIniciarTreinamento;
+	TButton *btnCancelarTreinamento;
 	void __fastcall pnDesenhoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall pnDesenhoPaint(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
@@ -41,7 +63,8 @@ __published:	// IDE-managed Components
 	void __fastcall pnDesenhoMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 	void __fastcall btnReconhecerClick(TObject *Sender);
-
+	void __fastcall btnIniciarTreinamentoClick(TObject *Sender);
+	void __fastcall btnCancelarTreinamentoClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
@@ -49,7 +72,13 @@ public:		// User declarations
 	Boolean IsDrawing;
 	unsigned char* read_bmp(char *fname,int* _w, int* _h);
 	void __fastcall testImagem();
+	float funcao_ativacao(float net, int funcao, float a);
+	float derivada(float net, int funcao, float a);
+	void __fastcall AtualizaGrafico();
+    void __fastcall carregarValoresTreinamento();
 };
+
+
 //---------------------------------------------------------------------------
 extern PACKAGE TFormPrincipal *FormPrincipal;
 //---------------------------------------------------------------------------
