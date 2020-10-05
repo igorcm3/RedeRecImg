@@ -2,8 +2,8 @@ object FormPrincipal: TFormPrincipal
   Left = 0
   Top = 0
   Caption = 'RNA - Reconhecimento de n'#250'meros'
-  ClientHeight = 452
-  ClientWidth = 662
+  ClientHeight = 448
+  ClientWidth = 663
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,16 +18,17 @@ object FormPrincipal: TFormPrincipal
   object tbiTreinamento: TPageControl
     Left = 0
     Top = 0
-    Width = 662
-    Height = 452
-    ActivePage = tbiClassificacao
+    Width = 663
+    Height = 448
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 662
+    ExplicitHeight = 452
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
-      DesignSize = (
-        654
-        424)
+      ExplicitWidth = 654
+      ExplicitHeight = 424
       object Splitter1: TSplitter
         Left = 368
         Top = 29
@@ -36,15 +37,6 @@ object FormPrincipal: TFormPrincipal
         Align = alNone
         Color = clSilver
         ParentColor = False
-      end
-      object Label1: TLabel
-        Left = 424
-        Top = 29
-        Width = 61
-        Height = 13
-        Alignment = taCenter
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Caption = 'Classifica'#231#227'o'
       end
       object gbDesenho: TGroupBox
         Left = 16
@@ -70,38 +62,86 @@ object FormPrincipal: TFormPrincipal
           ExplicitHeight = 184
         end
       end
-      object btnReconhecer: TButton
-        Left = 16
-        Top = 347
-        Width = 304
-        Height = 25
-        Caption = 'Reconhecer'
-        TabOrder = 1
-        OnClick = btnReconhecerClick
-      end
-      object ListBox1: TListBox
+      object gbAcoes: TGroupBox
         Left = 424
-        Top = 48
-        Width = 178
-        Height = 324
-        ItemHeight = 13
-        Items.Strings = (
-          '0 - 0%'
-          '1 - 0%'
-          '2 - 0%'
-          '3 - 0%'
-          '4 - 0%'
-          '5 - 0%'
-          '6 - 0%'
-          '7 - 0%'
-          '8 - 0%'
-          '9 - 0%')
+        Top = 207
+        Width = 181
+        Height = 157
+        Caption = 'A'#231#245'es'
+        TabOrder = 1
+        object btnReconhecerSalvar: TButton
+          Left = 24
+          Top = 112
+          Width = 123
+          Height = 25
+          Caption = 'Efetuar'
+          TabOrder = 0
+          OnClick = btnReconhecerSalvarClick
+        end
+        object eNomeArquivo: TEdit
+          Left = 24
+          Top = 84
+          Width = 123
+          Height = 21
+          TabOrder = 1
+          TextHint = 'Nome do arquivo'
+        end
+        object rbReconhecer: TRadioButton
+          Left = 24
+          Top = 32
+          Width = 113
+          Height = 17
+          Caption = 'Reconhecer imagem'
+          Checked = True
+          Color = clWhite
+          ParentColor = False
+          TabOrder = 2
+          TabStop = True
+          OnClick = rbReconhecerClick
+        end
+        object rbSalvarParaTreinamento: TRadioButton
+          Left = 24
+          Top = 55
+          Width = 125
+          Height = 17
+          Caption = 'Salvar p/ treinamento'
+          TabOrder = 3
+          OnClick = rbSalvarParaTreinamentoClick
+        end
+      end
+      object cgClassificacao: TGroupBox
+        Left = 424
+        Top = 29
+        Width = 181
+        Height = 172
+        Caption = 'Classifica'#231#227'o'
         TabOrder = 2
+        object ListBox1: TListBox
+          Left = 49
+          Top = 24
+          Width = 80
+          Height = 137
+          ItemHeight = 13
+          Items.Strings = (
+            '0 - 0%'
+            '1 - 0%'
+            '2 - 0%'
+            '3 - 0%'
+            '4 - 0%'
+            '5 - 0%'
+            '6 - 0%'
+            '7 - 0%'
+            '8 - 0%'
+            '9 - 0%')
+          TabOrder = 0
+        end
       end
     end
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
+      ExplicitWidth = 654
+      ExplicitHeight = 424
       object Chart1: TChart
         Left = 3
         Top = 16

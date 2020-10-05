@@ -64,6 +64,7 @@ void __fastcall TFormPrincipal::FormCreate(TObject *Sender)
 	DrawingBoard = new Graphics::TBitmap;
 	DrawingBoard->Width = pnDesenho->Width;
 	DrawingBoard->Height = pnDesenho->Height;
+    ajustarAcoes();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormPrincipal::pnDesenhoMouseDown(TObject *Sender, TMouseButton Button,
@@ -97,12 +98,16 @@ void __fastcall TFormPrincipal::pnDesenhoMouseUp(TObject *Sender, TMouseButton B
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormPrincipal::btnReconhecerClick(TObject *Sender)
+void __fastcall TFormPrincipal::btnReconhecerSalvarClick(TObject *Sender)
 {
-	// Salva o desenho como bitmap na pasta raiz Win32/Debug
-	//DrawingBoard->SaveToFile("bitmap.bmp");
-	//DrawingBoard->Monochrome = true;
-
+	// Validação caso queira salvar p/ treinamento sem nome de arquivo
+	if ((rbSalvarParaTreinamento->Checked) && (eNomeArquivo->Text == ""))
+	{
+		ShowMessage("Insira o nome do arquivo para que seja salvo");
+		eNomeArquivo->SetFocus();
+		return;
+	}
+	// Criação do arquivo 20x20 .bmp
 	Graphics::TBitmap *saveBoard = new Graphics::TBitmap(); // bitmap menor
 	TRect ARect;
 	saveBoard->Width = 20;
@@ -110,20 +115,27 @@ void __fastcall TFormPrincipal::btnReconhecerClick(TObject *Sender)
 	ARect = Rect(0, 0, saveBoard->Width, saveBoard->Height);
 	saveBoard->Canvas->StretchDraw(ARect, DrawingBoard);
 	saveBoard->Monochrome = true;  // Para salvar em 0 e 1, melhor monocroamtico
-	saveBoard->SaveToFile("bitmap.bmp");
+	// Verifica se é reconehcimento ou temporario para treinament0
+	AnsiString AFileName = rbSalvarParaTreinamento->Checked ? "temp_bitmap.bmp" : "bitmap.bmp";
+	saveBoard->SaveToFile(AFileName);
 	delete saveBoard;
-	bitmapParaMatrizPixels();
+	bitmapParaMatrizPixels(AFileName);
 	ShowMessage("Bitmap salvo com sucesso!");
 	// IMPLEMENTAR CLASSIFICAÇÃO.
 }
 
-void __fastcall TFormPrincipal::bitmapParaMatrizPixels()
+void __fastcall TFormPrincipal::bitmapParaMatrizPixels(AnsiString _AFileName)
 {
 	// Transforma bitmap em matriz de pixels
 	FILE *fp;
-	fp = fopen("bitmap.txt","wt");
+	AnsiString ANomeTxt = rbSalvarParaTreinamento->Checked ? "ArquivosTreinamento/"+eNomeArquivo->Text+".txt" : "bitmap.txt";
+	fp = fopen(ANomeTxt.c_str(),"wt");
+	if (fp == NULL) {
+		ShowMessage("Erro ao gravar arquivo para testes: "+eNomeArquivo->Text);
+        return;
+	}
 	int w, h, i, j;
-	unsigned char* img = read_bmp("bitmap.bmp", &w, &h);
+	unsigned char* img = read_bmp(_AFileName.c_str(), &w, &h);
 	for(j = 0 ; j < h ; j++)
 	{
 		for(i = 0 ; i < w ; i++)
@@ -626,5 +638,24 @@ void __fastcall TFormPrincipal::AtualizaGrafico()
 
 }
 
+//---------------------------------------------------------------------------
+
+void __fastcall TFormPrincipal::rbReconhecerClick(TObject *Sender)
+{
+	rbSalvarParaTreinamento->Checked =  !rbReconhecer->Checked;
+    ajustarAcoes();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormPrincipal::rbSalvarParaTreinamentoClick(TObject *Sender)
+{
+	rbReconhecer->Checked = !rbSalvarParaTreinamento->Checked;
+	ajustarAcoes();
+}
+
+void __fastcall TFormPrincipal::ajustarAcoes()
+{
+	eNomeArquivo->Enabled = rbSalvarParaTreinamento->Checked;
+}
 //---------------------------------------------------------------------------
 

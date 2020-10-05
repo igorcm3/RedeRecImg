@@ -44,10 +44,9 @@ __published:	// IDE-managed Components
 	TTabSheet *tbiClassificacao;
 	TTabSheet *TabSheet2;
 	TGroupBox *gbDesenho;
-	TButton *btnReconhecer;
+	TButton *btnReconhecerSalvar;
 	TSplitter *Splitter1;
 	TListBox *ListBox1;
-	TLabel *Label1;
 	TPaintBox *pnDesenho;
 	TChart *Chart1;
 	TFastLineSeries *Series1;
@@ -55,6 +54,11 @@ __published:	// IDE-managed Components
 	TMemo *meTreinamento;
 	TButton *btnIniciarTreinamento;
 	TButton *btnCancelarTreinamento;
+	TGroupBox *gbAcoes;
+	TRadioButton *rbReconhecer;
+	TRadioButton *rbSalvarParaTreinamento;
+	TEdit *eNomeArquivo;
+	TGroupBox *cgClassificacao;
 	void __fastcall pnDesenhoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall pnDesenhoPaint(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
@@ -62,20 +66,23 @@ __published:	// IDE-managed Components
           int X, int Y);
 	void __fastcall pnDesenhoMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
-	void __fastcall btnReconhecerClick(TObject *Sender);
+	void __fastcall btnReconhecerSalvarClick(TObject *Sender);
 	void __fastcall btnIniciarTreinamentoClick(TObject *Sender);
 	void __fastcall btnCancelarTreinamentoClick(TObject *Sender);
+	void __fastcall rbReconhecerClick(TObject *Sender);
+	void __fastcall rbSalvarParaTreinamentoClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
 	Graphics::TBitmap *DrawingBoard;
 	Boolean IsDrawing;
 	unsigned char* read_bmp(char *fname,int* _w, int* _h);
-	void __fastcall bitmapParaMatrizPixels();
+	void __fastcall bitmapParaMatrizPixels(AnsiString _AFileName);
 	float funcao_ativacao(float net, int funcao, float a);
 	float derivada(float net, int funcao, float a);
 	void __fastcall AtualizaGrafico();
-    void __fastcall carregarValoresTreinamento();
+	void __fastcall carregarValoresTreinamento();
+	void __fastcall ajustarAcoes();
 };
 
 
