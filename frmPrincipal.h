@@ -59,6 +59,10 @@ __published:	// IDE-managed Components
 	TRadioButton *rbSalvarParaTreinamento;
 	TEdit *eNomeArquivo;
 	TGroupBox *cgClassificacao;
+	TLabel *Label1;
+	TLabel *Label2;
+	TRadioButton *rbSalvarParaValidacao;
+	TLabel *Label3;
 	void __fastcall pnDesenhoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall pnDesenhoPaint(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
@@ -71,11 +75,15 @@ __published:	// IDE-managed Components
 	void __fastcall btnCancelarTreinamentoClick(TObject *Sender);
 	void __fastcall rbReconhecerClick(TObject *Sender);
 	void __fastcall rbSalvarParaTreinamentoClick(TObject *Sender);
+	void __fastcall rbSalvarParaValidacaoClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
 	Graphics::TBitmap *DrawingBoard;
 	Boolean IsDrawing;
+	AnsiString FPathSalvarMatriz;
+
+    // Métodos
 	unsigned char* read_bmp(char *fname,int* _w, int* _h);
 	void __fastcall bitmapParaMatrizPixels(AnsiString _AFileName);
 	float funcao_ativacao(float net, int funcao, float a);

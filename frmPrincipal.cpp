@@ -15,15 +15,45 @@ TFormPrincipal *FormPrincipal;
 	float curva = 0;
 	int padroes_validacao = 0;
 	float erro_medio_quadratico_validacao = 0, erro_quadratico_validacao = 0;
+
 	const int cx = 400;         // Camada de entrada. Matriz bitmap 20x20 = 400 pixels
 	const int c1 = 15;          // Camada Intermediária.
-	const int c2 = 10;         //  Camada de saida
-	float p[10][cx]; // 10 entradas com 400 registros por arquivo
-	float d[10][c2]; // Valores desejados na saida
+	const int c2 = 4;         //  Camada de saida
 
-	float v[10][cx];
-	float dv[10][c2];
 
+	float p[50][cx]; // 10 entradas com 400 registros por arquivo
+	// em cada linha armazena um padrão
+	// primeiro index do P é o numero de padrões.
+	//
+	// Valores desejados dos padrões ao final do treinamento.
+	float d[10][c2] =
+	{
+		1.0,    0.0,	0.0,	0.0,  // 0
+		0.0,    0.0,	0.0,	1.0,  // 1
+		0.0,    0.0,	1.0,	0.0,  // 2
+		0.0,	0.0,	1.0,	1.0,  // 3
+		0.0,    1.0,	0.0,	0.0,  // 4
+		0.0,	1.0,	0.0,	1.0,  // 5
+		0.0,    1.0,	1.0,	0.0,  // 6
+		0.0,	1.0,	1.0,	1.0,  // 7
+		1.0,    0.0,	0.0,	0.0,  // 8
+		1.0,	0.0,	0.0,	1.0   // 9
+	};
+
+	float v[50][cx];
+	float dv[10][c2] =
+	{
+		1.0,    0.0,	0.0,	0.0,  // 0
+		0.0,    0.0,	0.0,	1.0,  // 1
+		0.0,    0.0,	1.0,	0.0,  // 2
+		0.0,	0.0,	1.0,	1.0,  // 3
+		0.0,    1.0,	0.0,	0.0,  // 4
+		0.0,	1.0,	0.0,	1.0,  // 5
+		0.0,    1.0,	1.0,	0.0,  // 6
+		0.0,	1.0,	1.0,	1.0,  // 7
+		1.0,    0.0,	0.0,	0.0,  // 8
+		1.0,	0.0,	0.0,	1.0   // 9
+	};
 	// Camada de Saída.
 	float w1[cx*c1]  = {0};     // cx*c1
 	float w2[c1*c2]  = {0};     // c1*c2
@@ -128,7 +158,7 @@ void __fastcall TFormPrincipal::bitmapParaMatrizPixels(AnsiString _AFileName)
 {
 	// Transforma bitmap em matriz de pixels
 	FILE *fp;
-	AnsiString ANomeTxt = rbSalvarParaTreinamento->Checked ? "ArquivosTreinamento/"+eNomeArquivo->Text+".txt" : "bitmap.txt";
+	AnsiString ANomeTxt = (rbSalvarParaTreinamento->Checked || rbSalvarParaValidacao->Checked) ? FPathSalvarMatriz+eNomeArquivo->Text+".txt" : "bitmap.txt";
 	fp = fopen(ANomeTxt.c_str(),"wt");
 	if (fp == NULL) {
 		ShowMessage("Erro ao gravar arquivo para testes: "+eNomeArquivo->Text);
@@ -148,7 +178,7 @@ void __fastcall TFormPrincipal::bitmapParaMatrizPixels(AnsiString _AFileName)
 unsigned char* TFormPrincipal::read_bmp(char *fname,int* _w, int* _h)
 {
 	/*
-	BITMAP MONOCROMATICO PARA ARRAY DE BITS
+	BITMAP MONOCROMATICO PARA ARRAY DE BITS CRÉDITOS:
 	https://stackoverflow.com/questions/14597043/converting-1-bit-bmp-file-to-array-in-c-c
 	*/
 	unsigned char head[54];
@@ -223,7 +253,7 @@ void __fastcall TFormPrincipal::carregarValoresTreinamento()
 		else
 		{
 			fclose(arq_treinamento);
-            continue;
+			continue;
 		}
 	}
 }
@@ -643,19 +673,31 @@ void __fastcall TFormPrincipal::AtualizaGrafico()
 void __fastcall TFormPrincipal::rbReconhecerClick(TObject *Sender)
 {
 	rbSalvarParaTreinamento->Checked =  !rbReconhecer->Checked;
+	rbSalvarParaValidacao->Checked = !rbReconhecer->Checked;
     ajustarAcoes();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TFormPrincipal::rbSalvarParaTreinamentoClick(TObject *Sender)
 {
 	rbReconhecer->Checked = !rbSalvarParaTreinamento->Checked;
+	rbSalvarParaValidacao->Checked = !rbSalvarParaTreinamento->Checked;
 	ajustarAcoes();
 }
 
 void __fastcall TFormPrincipal::ajustarAcoes()
 {
-	eNomeArquivo->Enabled = rbSalvarParaTreinamento->Checked;
+	eNomeArquivo->Enabled = rbSalvarParaTreinamento->Checked || rbSalvarParaValidacao->Checked;
+	// Alterna as pastas onde os arqivos são salvos a partir
+	// da opção escolhida na tela
+	FPathSalvarMatriz = rbSalvarParaTreinamento->Checked ? "ArquivosTreinamento/" : "ArquivosValidacao/";
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormPrincipal::rbSalvarParaValidacaoClick(TObject *Sender)
+{
+	rbReconhecer->Checked = !rbSalvarParaValidacao->Checked;
+	rbSalvarParaTreinamento->Checked = !rbSalvarParaValidacao->Checked;
+	ajustarAcoes();
 }
 //---------------------------------------------------------------------------
 
