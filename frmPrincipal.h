@@ -90,6 +90,7 @@ public:		// User declarations
 	float derivada(float net, int funcao, float a);
 	void __fastcall AtualizaGrafico();
 	void __fastcall carregarValoresTreinamento();
+    void __fastcall carregarValoresValidacao();
 	void __fastcall ajustarAcoes();
 };
 

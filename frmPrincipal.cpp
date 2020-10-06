@@ -28,7 +28,7 @@ TFormPrincipal *FormPrincipal;
 	// Valores desejados dos padrões ao final do treinamento.
 	float d[10][c2] =
 	{
-		1.0,    0.0,	0.0,	0.0,  // 0
+		0.0,    0.0,	0.0,	0.0,  // 0
 		0.0,    0.0,	0.0,	1.0,  // 1
 		0.0,    0.0,	1.0,	0.0,  // 2
 		0.0,	0.0,	1.0,	1.0,  // 3
@@ -43,7 +43,7 @@ TFormPrincipal *FormPrincipal;
 	float v[50][cx];
 	float dv[10][c2] =
 	{
-		1.0,    0.0,	0.0,	0.0,  // 0
+		0.0,    0.0,	0.0,	0.0,  // 0
 		0.0,    0.0,	0.0,	1.0,  // 1
 		0.0,    0.0,	1.0,	0.0,  // 2
 		0.0,	0.0,	1.0,	1.0,  // 3
@@ -228,9 +228,12 @@ void __fastcall TFormPrincipal::btnIniciarTreinamentoClick(TObject *Sender)
 	MyThread = new Thread(true); 		// cria a thread suspensa, sem executar ainda.
 	// MyThread->FreeOnTerminate = True;   // destroi a thread automaticamente depois qu efinalizou.
 	MyThread->Priority = tpNormal;  		// configura com prioridade mais baixa que a normal.
-	// Carregar valores de entrada para treinamento
+	// Carregar valores de entrada para treinamento p[][]
 	carregarValoresTreinamento();
-	MyThread->Resume();					// faz com que a thread seja executada.
+	// Carregar valores de validação v[][]
+	carregarValoresValidacao();
+	//Inicia a thread
+	MyThread->Resume();
 }
 //---------------------------------------------------------------------------
 
@@ -240,20 +243,64 @@ void __fastcall TFormPrincipal::carregarValoresTreinamento()
 	FILE *arq_treinamento;
 	int contNum = 0;
 	AnsiString name[10]  = {"0", "1", "2", "3", "4","5", "6", "7", "8", "9"};
-	for (int i=0; i < 10; i++) {
-		AnsiString APath = "ArquivosTreinamento/"+name[i]+"_"+contNum+".txt";
-		arq_treinamento = fopen(APath.c_str(),"rt");
-		if (arq_treinamento != NULL) {
-			for(int j = 0; j < cx; j++){
-				fscanf(arq_treinamento, "%1f", &p[contNum][j]);
-			}
-			contNum++;
-			fclose(arq_treinamento);
-		}
-		else
+	// de 0 - 10, numero, name[i]
+	for (int i=0; i < 10; i++)
+	{
+		// de 0 - 5, mesmo número, 5 padrões diferentes
+		for(int j = 0; j < 5; j++)
 		{
-			fclose(arq_treinamento);
-			continue;
+			AnsiString APath = "ArquivosTreinamento/"+name[i]+"_"+name[j]+".txt";
+			arq_treinamento = fopen(APath.c_str() ,"rt");
+			if (arq_treinamento != NULL)
+			{
+				// insere no array P os valores dos 400 pixels equivalentes
+                // a matriz 20x20 do arquivo aberto.
+				for (k = 0; k < cx; k++)
+				{
+					fscanf(arq_treinamento, "%1f", &p[contNum][k]);
+				}
+				contNum++;
+				fclose(arq_treinamento);
+			}
+			else
+			{
+				fclose(arq_treinamento);
+				continue;
+			}
+		}
+	}
+}
+
+void __fastcall TFormPrincipal::carregarValoresValidacao()
+{
+	// Carrega os valores dos arquivos para o array de entrada
+	FILE *arq_treinamento;
+	int contNum = 0;
+	AnsiString name[10]  = {"0", "1", "2", "3", "4","5", "6", "7", "8", "9"};
+	// de 0 - 10, numero, name[i]
+	for (int i=0; i < 10; i++)
+	{
+		// de 0 - 5, mesmo número, 5 padrões diferentes
+		for(int j = 0; j < 5; j++)
+		{
+			AnsiString APath = "ArquivosValidacao/"+name[i]+"_"+name[j]+".txt";
+			arq_treinamento = fopen(APath.c_str() ,"rt");
+			if (arq_treinamento != NULL)
+			{
+				// insere no array P os valores dos 400 pixels equivalentes
+				// a matriz 20x20 do arquivo aberto.
+				for (k = 0; k < cx; k++)
+				{
+					fscanf(arq_treinamento, "%1f", &v[contNum][k]);
+				}
+				contNum++;
+				fclose(arq_treinamento);
+			}
+			else
+			{
+				fclose(arq_treinamento);
+				continue;
+			}
 		}
 	}
 }
@@ -342,7 +389,7 @@ void __fastcall Thread::Execute()
 	/* initialize random weights: */
 	srand (time(NULL));
 
-	padroes = 10;                   // Número de padrões a treinar.
+	padroes = 50;                   // Número de padrões a treinar.
 	funcao = 0;                 	// Função Logística(0).
 	taxa_aprendizado = 0.001;    	// Taxa de Aprendizado.
 	precisao_da_randomizacao = 0.01; // Precisão da randomização (0.1, 0.01, 0.001)
@@ -358,7 +405,7 @@ void __fastcall Thread::Execute()
 	curva = 0.3;
 
 
-	padroes_validacao = 32; 		// Número de padrões a validar.
+	padroes_validacao = 50; 		// Número de padrões a validar.
 	erro_medio_quadratico_validacao = 0;  	// Variável auxiliar do Erro médio quadrático ded validação.
 	erro_quadratico_validacao = 0;  // Variável auxiliar do erro quadrático de validação.
 
@@ -652,9 +699,7 @@ void __fastcall Thread::Execute()
 	// Fecha o ponteiro do arquivo dos pesos de treinamento da rede.
 	fclose(fp);
 }
-
 //---------------------------------------------------------------------------
-
 void __fastcall TFormPrincipal::AtualizaGrafico()
 {
 	// Plota as amostras no gráfico.
@@ -665,11 +710,8 @@ void __fastcall TFormPrincipal::AtualizaGrafico()
 
 	FormPrincipal->Chart1->Series[0]->AddY(erro_medio_quadratico);
 	FormPrincipal->Chart1->Series[1]->AddY(erro_medio_quadratico_validacao);
-
 }
-
 //---------------------------------------------------------------------------
-
 void __fastcall TFormPrincipal::rbReconhecerClick(TObject *Sender)
 {
 	rbSalvarParaTreinamento->Checked =  !rbReconhecer->Checked;
