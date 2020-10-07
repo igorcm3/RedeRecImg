@@ -555,13 +555,11 @@ object FormPrincipal: TFormPrincipal
     Top = 0
     Width = 674
     Height = 448
-    ActivePage = tbiClassificacao
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 663
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
-      ExplicitWidth = 655
       object Splitter1: TSplitter
         Left = 368
         Top = 29
@@ -709,9 +707,6 @@ object FormPrincipal: TFormPrincipal
     object TabSheet2: TTabSheet
       Caption = 'Treiamento'
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 28
-      ExplicitWidth = 655
       object Chart1: TChart
         Left = 1
         Top = 18
