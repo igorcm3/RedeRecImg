@@ -555,11 +555,13 @@ object FormPrincipal: TFormPrincipal
     Top = 0
     Width = 674
     Height = 448
-    ActivePage = TabSheet2
+    ActivePage = tbiClassificacao
     Align = alClient
     TabOrder = 0
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
+      ExplicitLeft = 0
+      ExplicitTop = 28
       object Splitter1: TSplitter
         Left = 368
         Top = 29
@@ -646,7 +648,7 @@ object FormPrincipal: TFormPrincipal
         end
         object rbReconhecer: TRadioButton
           Left = 30
-          Top = 32
+          Top = 30
           Width = 113
           Height = 17
           Caption = 'Reconhecer imagem'
@@ -683,9 +685,37 @@ object FormPrincipal: TFormPrincipal
         Height = 172
         Caption = 'Classifica'#231#227'o'
         TabOrder = 2
-        object ListBox1: TListBox
-          Left = 49
-          Top = 24
+        object Shape16: TShape
+          Left = 132
+          Top = 51
+          Width = 15
+          Height = 15
+          Shape = stCircle
+        end
+        object Shape17: TShape
+          Left = 132
+          Top = 68
+          Width = 15
+          Height = 15
+          Shape = stCircle
+        end
+        object Shape18: TShape
+          Left = 132
+          Top = 88
+          Width = 15
+          Height = 15
+          Shape = stCircle
+        end
+        object Shape19: TShape
+          Left = 132
+          Top = 107
+          Width = 15
+          Height = 15
+          Shape = stCircle
+        end
+        object listboxClassificacao: TListBox
+          Left = 46
+          Top = 22
           Width = 80
           Height = 137
           ItemHeight = 13

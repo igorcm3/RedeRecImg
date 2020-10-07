@@ -18,7 +18,7 @@ TFormPrincipal *FormPrincipal;
 
 	const int cx = 400;         // Camada de entrada. Matriz bitmap 20x20 = 400 pixels
 	const int c1 = 15;          // Camada Intermediária.
-	const int c2 = 4;         //  Camada de saida
+	const int c2 = 4;         //  Camada de saida 4 bits, para representar de 0-9
 
 
 	float p[50][cx]; // 10 entradas com 400 registros por arquivo
@@ -230,8 +230,81 @@ void __fastcall TFormPrincipal::btnReconhecerSalvarClick(TObject *Sender)
 	saveBoard->SaveToFile(AFileName);
 	delete saveBoard;
 	bitmapParaMatrizPixels(AFileName);
-	ShowMessage("Bitmap salvo com sucesso!");
-	// IMPLEMENTAR CLASSIFICAÇÃO.
+	if (rbReconhecer->Checked)
+	{
+		// Classificação.
+        classificar();
+	}
+	else
+	{
+		ShowMessage("Matriz de bitmap salvo com sucesso!");
+	}
+}
+
+void __fastcall TFormPrincipal::classificar()
+{
+	//Cálculo para camada C1.
+	n = 0;
+	for (j = 0; j < c1; j++)
+	{
+		soma = 0;
+		for (i = 0; i < cx; i++)
+		{
+			soma += w1[n] * p[listboxClassificacao->ItemIndex][i];
+			n += 1;
+		}
+		entrada_camada1[j] = soma;
+		saida_camada1[j] = funcao_ativacao(entrada_camada1[j],funcao,curva);
+		// Formata a saída em binário.
+		if (saida_camada1[j] < 0.5)
+		{
+			saidas_formatadas_c1[j] = 0;
+		}else{
+			saidas_formatadas_c1[j] = 1;
+		}
+	}
+	//Cálculo para camada C2.
+	n = 0;
+	for (j = 0; j < c2; j++)
+	{
+		soma = 0;
+		for (i = 0; i < c1; i++)
+		{
+			soma += w2[n] * saida_camada1[i];
+			n += 1;
+		}
+		entrada_camada2[j] = soma;
+		saida_camada2[j] = funcao_ativacao(entrada_camada2[j],funcao,curva);
+		// Formata a saída em binário.
+		if (saida_camada2[j] < 0.5)
+		{
+			saidas_formatadas_c2[j] = 0;
+		}else{
+			saidas_formatadas_c2[j] = 1;
+		}
+	}
+
+	// Formatação dos neurônios da camada 2
+	Shape16->Brush->Color = clWhite;
+	Shape17->Brush->Color = clWhite;
+	Shape18->Brush->Color = clWhite;
+	Shape19->Brush->Color = clWhite;
+	if (saidas_formatadas_c2[0] > 0.5)
+		Shape16->Brush->Color = clRed;
+	else
+		Shape16->Brush->Color = clWhite;
+
+	if (saidas_formatadas_c2[1] > 0.5)
+		Shape17->Brush->Color = clRed;
+	else
+		Shape17->Brush->Color = clWhite;
+
+	if (saidas_formatadas_c2[2] > 0.5)
+		Shape18->Brush->Color = clRed;
+	else
+		Shape18->Brush->Color = clWhite;
+
+
 }
 
 void __fastcall TFormPrincipal::bitmapParaMatrizPixels(AnsiString _AFileName)
@@ -822,4 +895,5 @@ void __fastcall TFormPrincipal::rbSalvarParaValidacaoClick(TObject *Sender)
 	ajustarAcoes();
 }
 //---------------------------------------------------------------------------
+
 

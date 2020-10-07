@@ -46,7 +46,7 @@ __published:	// IDE-managed Components
 	TGroupBox *gbDesenho;
 	TButton *btnReconhecerSalvar;
 	TSplitter *Splitter1;
-	TListBox *ListBox1;
+	TListBox *listboxClassificacao;
 	TPaintBox *pnDesenho;
 	TChart *Chart1;
 	TFastLineSeries *Series1;
@@ -63,6 +63,10 @@ __published:	// IDE-managed Components
 	TLabel *Label2;
 	TRadioButton *rbSalvarParaValidacao;
 	TLabel *Label3;
+	TShape *Shape16;
+	TShape *Shape17;
+	TShape *Shape18;
+	TShape *Shape19;
 	void __fastcall pnDesenhoMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall pnDesenhoPaint(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
@@ -76,6 +80,7 @@ __published:	// IDE-managed Components
 	void __fastcall rbReconhecerClick(TObject *Sender);
 	void __fastcall rbSalvarParaTreinamentoClick(TObject *Sender);
 	void __fastcall rbSalvarParaValidacaoClick(TObject *Sender);
+
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormPrincipal(TComponent* Owner);
@@ -90,8 +95,9 @@ public:		// User declarations
 	float derivada(float net, int funcao, float a);
 	void __fastcall AtualizaGrafico();
 	void __fastcall carregarValoresTreinamento();
-    void __fastcall carregarValoresValidacao();
+	void __fastcall carregarValoresValidacao();
 	void __fastcall ajustarAcoes();
+	void __fastcall classificar();
 };
 
 
