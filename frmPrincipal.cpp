@@ -252,8 +252,6 @@ void __fastcall TFormPrincipal::btnReconhecerSalvarClick(TObject *Sender)
 
 void __fastcall TFormPrincipal::classificar()
 {
-		float saidaC2[j];
-
         // Propagação dos padrões de entrada pela camada C1.
         n = 0;
 		for (j = 0; j < c1; j++)
@@ -280,9 +278,8 @@ void __fastcall TFormPrincipal::classificar()
             }
             entrada_camada2[j] = soma;
 			saida_camada2[j] = funcao_ativacao(entrada_camada2[j],funcao,1.0);
+		}
 
-			  saidaC2[j] = saida_camada2[j];
-        }
 	 saida_camada2[j] *= 2000;
 	// Formatação dos neurônios da camada 2                               S
 	Shape16->Brush->Color = clWhite;
