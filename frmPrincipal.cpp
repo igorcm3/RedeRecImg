@@ -17,7 +17,7 @@ TFormPrincipal *FormPrincipal;
 	float erro_medio_quadratico_validacao = 0, erro_quadratico_validacao = 0;
 
 	const int cx = 400;         // Camada de entrada. Matriz bitmap 20x20 = 400 pixels
-	const int c1 = 15;          // Camada Intermediária.
+	const int c1 = 10;          // Camada Intermediária.
 	const int c2 = 4;         //  Camada de saida 4 bits, para representar de 0-9
 
 
@@ -232,8 +232,17 @@ void __fastcall TFormPrincipal::btnReconhecerSalvarClick(TObject *Sender)
 	bitmapParaMatrizPixels(AFileName);
 	if (rbReconhecer->Checked)
 	{
-		// Classificação.
-        classificar();
+	// Classificação.
+	// Transforma bitmap em matriz de pixels
+	int w, h, i, j;
+	unsigned char* img = read_bmp("bitmap.bmp", &w, &h);
+		for(i = 0 ; i < w ; i++){
+		v[0][i] = img[j * w + i];
+	}
+
+
+		// classifica valor desenhado
+		classificar();
 	}
 	else
 	{
@@ -243,63 +252,55 @@ void __fastcall TFormPrincipal::btnReconhecerSalvarClick(TObject *Sender)
 
 void __fastcall TFormPrincipal::classificar()
 {
-	//Cálculo para camada C1.
-	n = 0;
-	for (j = 0; j < c1; j++)
-	{
-		soma = 0;
-		for (i = 0; i < cx; i++)
-		{
-			soma += w1[n] * p[listboxClassificacao->ItemIndex][i];
-			n += 1;
-		}
-		entrada_camada1[j] = soma;
-		saida_camada1[j] = funcao_ativacao(entrada_camada1[j],funcao,curva);
-		// Formata a saída em binário.
-		if (saida_camada1[j] < 0.5)
-		{
-			saidas_formatadas_c1[j] = 0;
-		}else{
-			saidas_formatadas_c1[j] = 1;
-		}
-	}
-	//Cálculo para camada C2.
-	n = 0;
-	for (j = 0; j < c2; j++)
-	{
-		soma = 0;
-		for (i = 0; i < c1; i++)
-		{
-			soma += w2[n] * saida_camada1[i];
-			n += 1;
-		}
-		entrada_camada2[j] = soma;
-		saida_camada2[j] = funcao_ativacao(entrada_camada2[j],funcao,curva);
-		// Formata a saída em binário.
-		if (saida_camada2[j] < 0.5)
-		{
-			saidas_formatadas_c2[j] = 0;
-		}else{
-			saidas_formatadas_c2[j] = 1;
-		}
-	}
+		float saidaC2[j];
 
-	// Formatação dos neurônios da camada 2
+        // Propagação dos padrões de entrada pela camada C1.
+        n = 0;
+		for (j = 0; j < c1; j++)
+		{
+			soma = 0;
+			for (i = 0; i < cx; i++)
+			{
+				soma += w1[n] * v[0][i];
+                n += 1;
+            }
+			entrada_camada1[j] = soma;
+            saida_camada1[j] = funcao_ativacao(entrada_camada1[j],funcao,1.0);
+        }
+
+        // Propagação dos padrões de entrada pela camada C2.
+        n = 0;
+        for (j = 0; j < c2; j++)
+		{
+            soma = 0;
+            for (i = 0; i < c1; i++)
+            {
+				soma += w2[n] * saida_camada1[i];
+                n += 1;
+            }
+            entrada_camada2[j] = soma;
+			saida_camada2[j] = funcao_ativacao(entrada_camada2[j],funcao,1.0);
+
+			  saidaC2[j] = saida_camada2[j];
+        }
+	 saida_camada2[j] *= 2000;
+	// Formatação dos neurônios da camada 2                               S
 	Shape16->Brush->Color = clWhite;
 	Shape17->Brush->Color = clWhite;
 	Shape18->Brush->Color = clWhite;
 	Shape19->Brush->Color = clWhite;
-	if (saidas_formatadas_c2[0] > 0.5)
+
+	if (saida_camada2[0] > 0.05)
 		Shape16->Brush->Color = clRed;
 	else
 		Shape16->Brush->Color = clWhite;
 
-	if (saidas_formatadas_c2[1] > 0.5)
+	if (saida_camada2[1] > 0.05)
 		Shape17->Brush->Color = clRed;
 	else
 		Shape17->Brush->Color = clWhite;
 
-	if (saidas_formatadas_c2[2] > 0.5)
+	if (saida_camada2[2] > 0.05)
 		Shape18->Brush->Color = clRed;
 	else
 		Shape18->Brush->Color = clWhite;
@@ -315,7 +316,7 @@ void __fastcall TFormPrincipal::bitmapParaMatrizPixels(AnsiString _AFileName)
 	fp = fopen(ANomeTxt.c_str(),"wt");
 	if (fp == NULL) {
 		ShowMessage("Erro ao gravar arquivo para testes: "+eNomeArquivo->Text);
-        return;
+		return;
 	}
 	int w, h, i, j;
 	unsigned char* img = read_bmp(_AFileName.c_str(), &w, &h);
@@ -548,7 +549,7 @@ void __fastcall Thread::Execute()
 	precisao_da_randomizacao = 0.01; // Precisão da randomização (0.1, 0.01, 0.001)
 	ERRO = 0.0001;              	// Erro mínimo aceitável da rede (se aplicável).
 	MOMENTUM = 0.9;             	// Termo de momentum.
-	epocas = 5000;            		// Número máximo de épocas de treinamento.
+	epocas = 1000;            		// Número máximo de épocas de treinamento.
 	rnd = 0;                    	// Variável auxiliar para a randomização dos pesos.
 	soma = 0;                   	// Variável auxiliar para a soma das sinapses.
 	erro_medio_quadratico = 0;  	// Variável auxiliar do Erro médio quadrático.
@@ -895,5 +896,6 @@ void __fastcall TFormPrincipal::rbSalvarParaValidacaoClick(TObject *Sender)
 	ajustarAcoes();
 }
 //---------------------------------------------------------------------------
+
 
 

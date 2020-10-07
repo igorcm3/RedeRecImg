@@ -560,8 +560,6 @@ object FormPrincipal: TFormPrincipal
     TabOrder = 0
     object tbiClassificacao: TTabSheet
       Caption = 'Classifica'#231#227'o'
-      ExplicitLeft = 0
-      ExplicitTop = 28
       object Splitter1: TSplitter
         Left = 368
         Top = 29
